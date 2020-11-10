@@ -211,7 +211,7 @@ int main(int argc, char *const *argv)
                                               { num_yields, 1 } };
     double fork_join_overhead_per_thread_ns, yield_overhead_per_thread_ns;
     for (int benchmark_i = 0;
-         benchmark_i < sizeof(benchmark_params) / sizeof(benchmark_params[0]);
+         benchmark_i < sizeof(benchmark_params) / sizeof(benchmark_param_t);
          benchmark_i++) {
         const int num_yields_local = benchmark_params[benchmark_i].num_yields;
         const int num_threads_local = benchmark_params[benchmark_i].num_threads;
