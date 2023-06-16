@@ -10,8 +10,8 @@ num_threads=16
 num_yields=4096
 num_warmups=128
 
-./run_pthread -H
+#./run_pthread -H
 
-for thread_type in pthread qthread argobots; do
+for thread_type in pthreads qthreads argobots; do
   ./run_$thread_type -r $num_repeats -w $num_warmups -y $num_yields -t $num_threads -c
 done
