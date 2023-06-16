@@ -17,7 +17,7 @@ static double get_time_sec()
 }
 
 #include <qthread.h>
-#define THREAD_TYPE "Qthreads"
+#define THREAD_TYPE "qthreads"
 
 static aligned_t yield_f(void *arg)
 {

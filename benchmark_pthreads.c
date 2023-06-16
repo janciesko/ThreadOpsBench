@@ -17,7 +17,7 @@ static double get_time_sec()
 }
 
 #include <pthread.h>
-#define THREAD_TYPE "Pthreads"
+#define THREAD_TYPE "pthreads"
 
 static void *yield_f(void *arg)
 {

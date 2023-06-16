@@ -18,7 +18,7 @@ static double get_time_sec()
 
 #include <cppcoro/generator.hpp>
 
-#define THREAD_TYPE "Coroutines" 
+#define THREAD_TYPE "coroutines" 
 
 cppcoro::generator<int> range(int num_yields)
 {

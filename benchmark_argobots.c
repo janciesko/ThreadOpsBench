@@ -18,7 +18,7 @@ static double get_time_sec()
 
 
 #include <abt.h>
-#define THREAD_TYPE "Argobots"
+#define THREAD_TYPE "argobots"
 
 static void yield_f(void *arg)
 {
