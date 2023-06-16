@@ -1,4 +1,5 @@
 # ThreadOpsBench
 
-Fork-Join-Yield benchmark originally developed by Shintaro Iwasaki.
-Maintained by Jan Ciesko.
+Fork-Join-Yield benchmark. 
+Jan Ciesko
+Shintaro Iwasaki

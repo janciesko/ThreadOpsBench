@@ -1,15 +1,41 @@
-cd argobots
-sh autogen.sh
-./configure --enable-fast=O3 --enable-debug=none --enable-tls-model=initial-exec --enable-checks=no --enable-feature=no --prefix=$(pwd)/install
-make -j install
-cd ..
+var=$1
 
-cd qthreads
-./autogen.sh
-./configure --prefix=$(pwd)/install CFLAGS="-O3" CXXFLAGS="-O3"
-make -j install
-cd ..
+if [ x"$var" = x"argobots" ] || [ x"$var" = x"all" ];then
+    echo "Building Argobots."
+    cd argobots
+    sh autogen.sh
+    ./configure --enable-fast=O3 --enable-debug=none --enable-tls-model=initial-exec --enable-checks=no --enable-feature=no --prefix=$(pwd)/install
+    make -j install
+    cd ..
+fi
+if [ x"$var" = x"qthreads" ] || [ x"$var" = x"all" ];then
+    echo "Building Qthreads."
+    cd argobots
+    sh autogen.sh
+    ./configure --enable-fast=O3 --enable-debug=none --enable-tls-model=initial-exec --enable-checks=no --enable-feature=no --prefix=$(pwd)/install
+    make -j install
+    cd ..
+fi
+if [ x"$var" = x"hpx" ] || [ x"$var" = x"all" ];then
+    echo "Building HPX."
+    cd hpx
+    mkdir build
+    cd build
+    cmake .. -DCMAKE_BUILD_TYPE=Release -DHPX_WITH_FETCH_ASIO=ON -DHPX_WITH_MALLOC=On
+    make -j 
+    cd ../../
+fi
+if [ x"$var" = x"legion" ] || [ x"$var" = x"all" ];then
+    echo "Building Legion."
+    cd legion
+    mkdir build
+    cd build
+    cmake .. -DCMAKE_BUILD_TYPE=Release
+    make -j 
+    cd ../../
+fi
 
-gcc -O3 benchmark.c -DUSE_PTHREADS -std=gnu99 -lpthread -o run_pthreads
-gcc -O3 benchmark.c -DUSE_QTHREADS -std=gnu99 -lqthread -L $(pwd)/qthreads/install/lib -I $(pwd)/qthreads/install/include -Wl,-rpath=$(pwd)/qthreads/install/lib -o run_qthreads
-gcc -O3 benchmark.c -DUSE_ARGOBOTS -std=gnu99 -labt -L $(pwd)/argobots/install/lib -I $(pwd)/argobots/install/include -Wl,-rpath=$(pwd)/argobots/install/lib -o run_argobots
+if [ x"$var" = x ];then
+echo "No selection made. Exiting."
+fi
+

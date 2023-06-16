@@ -1,6 +1,3 @@
-
-#define _GNU_SOURCE
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -19,99 +16,8 @@ static double get_time_sec()
     return tv.tv_sec + (double)tv.tv_usec * 1e-6;
 }
 
-#if defined(USE_QTHREADS)
-
-#include <qthread.h>
-#define THREAD_TYPE "QTH"
-
-static aligned_t yield_f(void *arg)
-{
-    size_t num_yields = (size_t)((intptr_t)arg);
-    for (int i = 0; i < num_yields; i++) {
-        qthread_yield();
-    }
-    return 0;
-}
-
-aligned_t *g_rets;
-
-static void init(int num_threads)
-{
-    qthread_initialize();
-    g_rets = (aligned_t *)calloc(num_threads, sizeof(aligned_t));
-}
-
-static void finalize(void)
-{
-    free(g_rets);
-    qthread_finalize();
-}
-
-static void kernel(int num_threads, int num_yields)
-{
-    for (int i = 0; i < num_threads; i++) {
-        qthread_fork(yield_f, (void *)((intptr_t)num_yields), &g_rets[i]);
-    }
-    for (int i = 0; i < num_threads; i++) {
-        qthread_readFF(NULL, &g_rets[i]);
-    }
-}
-
-#elif defined(USE_ARGOBOTS)
-
-#include <abt.h>
-#define THREAD_TYPE "ABT"
-
-static void yield_f(void *arg)
-{
-    size_t num_yields = (size_t)((intptr_t)arg);
-    for (int i = 0; i < num_yields; i++) {
-        ABT_thread_yield();
-    }
-}
-
-ABT_thread *g_threads;
-ABT_pool g_pool;
-
-static void init(int num_threads)
-{
-    ABT_init(0, NULL);
-    g_threads = (ABT_thread *)calloc(num_threads, sizeof(ABT_thread));
-    ABT_xstream self_xstream;
-    ABT_xstream_self(&self_xstream);
-#if 0
-    ABT_xstream_get_main_pools(self_xstream, 1, &g_pool);
-#else
-    ABT_sched sched;
-    ABT_pool_create_basic(ABT_POOL_FIFO, ABT_POOL_ACCESS_MPMC, ABT_TRUE,
-                          &g_pool);
-    ABT_sched_create_basic(ABT_SCHED_DEFAULT, 1, &g_pool, ABT_SCHED_CONFIG_NULL,
-                           &sched);
-    ABT_xstream_set_main_sched(self_xstream, sched);
-#endif
-}
-
-static void finalize(void)
-{
-    free(g_threads);
-    ABT_finalize();
-}
-
-static void kernel(int num_threads, int num_yields)
-{
-    for (int i = 0; i < num_threads; i++) {
-        ABT_thread_create(g_pool, yield_f, (void *)((intptr_t)num_yields),
-                          ABT_THREAD_ATTR_NULL, &g_threads[i]);
-    }
-    for (int i = 0; i < num_threads; i++) {
-        ABT_thread_free(&g_threads[i]);
-    }
-}
-
-#else /* Pthreads. */
-
 #include <pthread.h>
-#define THREAD_TYPE "PTH"
+#define THREAD_TYPE "Pthreads"
 
 static void *yield_f(void *arg)
 {
@@ -145,7 +51,6 @@ static void kernel(int num_threads, int num_yields)
     }
 }
 
-#endif /* Pthreads */
 
 typedef struct benchmark_param_t {
     int num_yields;
@@ -154,7 +59,6 @@ typedef struct benchmark_param_t {
 
 int main(int argc, char *const *argv)
 {
-
     int num_repeats = 8;
     int num_warmups = 4;
     int num_threads = 16;
