@@ -17,7 +17,7 @@ static double get_time_sec()
 }
 
 #include <qthread.h>
-#define THREAD_TYPE "qthreads"
+#define THREAD_TYPE "Qthreads"
 
 static aligned_t yield_f(void *arg)
 {
@@ -141,10 +141,10 @@ int main(int argc, char *const *argv)
 
     /* Print data. */
     if (print_csv) {
-        printf("%s%s, %s, %d, %d, %d, %d, %f\n", prefix, THREAD_TYPE,
+        printf("%s%s,%s,%d,%d,%d,%d,%f\n", prefix, THREAD_TYPE,
                "FORKJOIN", num_repeats, num_threads, num_yields, num_warmups,
                fork_join_overhead_per_thread_ns);
-        printf("%s%s, %s, %d, %d, %d, %d, %f\n", prefix, THREAD_TYPE, "YIELD",
+        printf("%s%s,%s,%d,%d,%d,%d,%f\n", prefix, THREAD_TYPE, "YIELD",
                num_repeats, num_threads, num_yields, num_warmups,
                yield_overhead_per_thread_ns);
     } else {
