@@ -20,7 +20,7 @@ static double get_time_sec()
 
 static int yield_f(int arg)
 {
-    size_t num_yields = (size_t)((intptr_t)arg);
+    size_t num_yields = arg;
     for (int i = 0; i < num_yields; i++) {
         #pragma omp taskyield
     }

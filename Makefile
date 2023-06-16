@@ -38,6 +38,6 @@ argobots: $(SOURCES_ABT)
 
 
 openmp: $(SOURCES_OMP)
-	$(CC) $(CCFLAGS) $^ -openmp -o run_$@
+	$(CC) $(CCFLAGS) $^ -fopenmp -o run_$@
 clean: 
 	rm run_* -rf
