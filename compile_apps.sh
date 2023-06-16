@@ -20,7 +20,10 @@ if [ x"$var" = x"legion" ] || [ x"$var" = x"all" ];then
     echo "Building Legion benchmark."
     #make legion
 fi
-
+if [ x"$var" = x"openmp" ] || [ x"$var" = x"all" ];then
+    echo "Building Legion benchmark."
+    make openmp
+fi
 if [ x"$var" = x"async" ] || [ x"$var" = x"all" ];then
     echo "Building std::async benchmark."
     make stdasync

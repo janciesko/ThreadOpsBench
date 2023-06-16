@@ -16,7 +16,6 @@ static double get_time_sec()
     return tv.tv_sec + (double)tv.tv_usec * 1e-6;
 }
 
-
 #include <qthread.h>
 #define THREAD_TYPE "Qthreads"
 

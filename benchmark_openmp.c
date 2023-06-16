@@ -5,10 +5,6 @@
 #include <unistd.h>
 #include <stdarg.h>
 
-#include <thread>
-#include <future>
-
-
 static void init(int num_threads);
 static void finalize(void);
 static void kernel(int num_threads, int num_yields);
@@ -20,35 +16,33 @@ static double get_time_sec()
     return tv.tv_sec + (double)tv.tv_usec * 1e-6;
 }
 
-#include <thread>
-
-#define THREAD_TYPE "stdasync" 
+#define THREAD_TYPE "openmp"
 
 static int yield_f(int arg)
 {
     size_t num_yields = (size_t)((intptr_t)arg);
     for (int i = 0; i < num_yields; i++) {
-        std::this_thread::yield();
+        #pragma omp taskyield
     }
-    return 1;
+    return 0;
 }
 
-std::future<int> *g_rets;
+static void init(int num_threads)
+{}
 
-void init(int num_threads, int num_yields) {
-    g_rets = (std::future<int> *)calloc(num_threads, sizeof(std::future<int>));
-}
-static void finalize() {
-    free(g_rets);
-}
+static void finalize(void)
+{}
 
 static void kernel(int num_threads, int num_yields)
 {
+    #pragma omp parallel num_threads(num_threads)
+    #pragma omp single
+    {
     for (int i = 0; i < num_threads; i++) {
-        g_rets[i] = std::async(yield_f, num_yields);
+        #pragma omp task 
+        yield_f(num_yields);
     }
-    for (int i = 0; i < num_threads; i++) {
-        g_rets[i].get();
+    #pragma omp taskwait
     }
 }
 
@@ -108,7 +102,7 @@ int main(int argc, char *const *argv)
     }
 
     /* Initialize the threading library */
-    init(num_threads, num_yields);
+    init(num_threads);
 
     /* Measure the overheads */
     benchmark_param_t benchmark_params[2] = { { 0, num_threads },

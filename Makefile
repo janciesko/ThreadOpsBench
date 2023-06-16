@@ -18,7 +18,7 @@ SOURCES_ASYNC = benchmark_stdasync.cpp
 SOURCES_LEGION = benchmark_legion.cpp
 SOURCES_HPX =  benchmark_coroutine.cpp
 SOURCES_P = benchmark_pthreads.c
-
+SOURCES_OMP = benchmark_openmp.c
 all: pthreads qthreads argobots stdasync
 
 default: pthreads
@@ -28,13 +28,16 @@ stdasync: $(SOURCES_ASYNC)
 
 pthreads: $(SOURCES_P)
 	$(shell echo )
-	$(CC) $(CCFLAGS) $^ -DUSE_PTHREADS -lpthread -o run_$@
+	$(CC) $(CCFLAGS) $^ -lpthread -o run_$@
 
 qthreads: $(SOURCES_Q)
-	$(CC) $(CCFLAGS) $^ -DUSE_QTHREADS $(QT_PATHS) -lqthread -o run_$@
+	$(CC) $(CCFLAGS) $^ $(QT_PATHS) -lqthread -o run_$@
 
 argobots: $(SOURCES_ABT)
-	$(CC) $(CCFLAGS) $^ -DUSE_ARGOBOTS $(AB_PATHS) -labt -o run_$@
+	$(CC) $(CCFLAGS) $^ $(AB_PATHS) -labt -o run_$@
 
+
+openmp: $(SOURCES_OMP)
+	$(CC) $(CCFLAGS) $^ -openmp -o run_$@
 clean: 
 	rm run_* -rf

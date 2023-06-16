@@ -10,6 +10,6 @@ num_threads=16
 num_yields=4096
 num_warmups=128
 
-for thread_type in pthreads qthreads argobots stdasync; do
+for thread_type in pthreads stdasync openmp qthreads argobots; do
   ./run_$thread_type -r $num_repeats -w $num_warmups -y $num_yields -t $num_threads -c
 done
