@@ -21,8 +21,8 @@ if [ x"$var" = x"hpx" ] || [ x"$var" = x"all" ];then
     cd hpx
     mkdir build
     cd build
-    cmake .. -DCMAKE_BUILD_TYPE=Release -DHPX_WITH_FETCH_ASIO=ON -DHPX_WITH_MALLOC=On
-    make -j 
+    cmake .. -DCMAKE_BUILD_TYPE=Release -DHPX_WITH_FETCH_ASIO=ON -DHPX_WITH_MALLOC=On -DCMAKE_INSTALL_PREFIX=$(pwd)/../install
+    make -j install
     cd ../../
 fi
 if [ x"$var" = x"legion" ] || [ x"$var" = x"all" ];then
@@ -30,8 +30,8 @@ if [ x"$var" = x"legion" ] || [ x"$var" = x"all" ];then
     cd legion
     mkdir build
     cd build
-    cmake .. -DCMAKE_BUILD_TYPE=Release
-    make -j 
+    cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$(pwd)/../install
+    make -j install
     cd ../../
 fi
 

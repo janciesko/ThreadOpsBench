@@ -5,6 +5,10 @@
 #include <unistd.h>
 #include <stdarg.h>
 
+#include <hpx/init.hpp>
+#include <hpx/future.hpp>
+#include <hpx/runtime.hpp>
+
 static void init(int num_threads);
 static void finalize(void);
 static void kernel(int num_threads, int num_yields);
@@ -16,41 +20,33 @@ static double get_time_sec()
     return tv.tv_sec + (double)tv.tv_usec * 1e-6;
 }
 
-#if defined(USE_QTHREADS)
-
-
 #define THREAD_TYPE "HPX"
 
-static aligned_t yield_f(void *arg)
-{
-    size_t num_yields = (size_t)((intptr_t)arg);
-    for (int i = 0; i < num_yields; i++) {
-        //do some yielding
-    }
-    return 0;
-}
 
-aligned_t *g_rets;
+hpx::future<void> *g_rets;
 
 static void init(int num_threads)
 {
-    //hpx_initialize
-    g_rets = (aligned_t *)calloc(num_threads, sizeof(aligned_t));
+    g_rets = (hpx::future<void> *)calloc(num_threads, sizeof(hpx::future<void>));
 }
 
 static void finalize(void)
 {
     free(g_rets);
-    //hpx finalize
+    hpx::local::finalize();
 }
 
 static void kernel(int num_threads, int num_yields)
 {
     for (int i = 0; i < num_threads; i++) {
-        //hpx_fork(yield_f, (void *)((intptr_t)num_yields), &g_rets[i]);
+        g_rets[i] = hpx::async( [&num_yields](){
+        for (int i = 0; i < num_yields; i++) {
+            hpx::this_thread::yield();
+       }});
     }
+    
     for (int i = 0; i < num_threads; i++) {
-        //hpx_task_get(NULL, &g_rets[i]);
+        g_rets[i].get();
     }
 }
 
@@ -60,7 +56,9 @@ typedef struct benchmark_param_t {
     int num_threads;
 } benchmark_param_t;
 
-int main(int argc, char *const *argv)
+
+
+int hpx_main(int argc, char *const *argv)
 {
 
     int num_repeats = 8;
@@ -165,4 +163,9 @@ int main(int argc, char *const *argv)
     finalize();
     free(prefix);
     return 0;
+}
+
+int main(int argc, char **argv)
+{
+    hpx::local::init(hpx_main, argc, argv);
 }
