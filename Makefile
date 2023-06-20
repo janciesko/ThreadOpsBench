@@ -10,7 +10,7 @@ SOURCEDIR = .
 
 QT_PATHS = -I$(QTHREADS_INSTALL_PATH)/include -L$(QTHREADS_INSTALL_PATH)/lib
 AB_PATHS = -I$(ARGOBOTS_INSTALL_PATH)/include -L$(ARGOBOTS_INSTALL_PATH)/lib
-HPX_PATHS = -I$(HPX_INSTALL_PATH)/include -I/projects/x86-64-skylake/tpls/boost/1.81.0/gcc/11.2.0/base/ibpuap5/include/ -L$(HPX_INSTALL_PATH)/lib64/ -L/projects/x86-64-skylake/tpls/boost/1.81.0/gcc/11.2.0/base/ibpuap5/lib
+HPX_PATHS = -I$(HPX_INSTALL_PATH)/include -I/projects/x86-64-skylake/tpls/boost/1.81.0/gcc/11.2.0/base/ibpuap5/include/ -L$(HPX_INSTALL_PATH)/lib64/ -L/projects/x86-64-skylake/tpls/boost/1.81.0/gcc/11.2.0/base/ibpuap5/lib -lhpx_iostreams
 
 #SOURCES := $(shell find $(SOURCEDIR) -maxdepth 1 -name '*.c')
 
@@ -39,7 +39,10 @@ argobots: $(SOURCES_ABT)
 	$(CC) $(CCFLAGS) $^ $(AB_PATHS) -labt -o run_$@
 
 hpx: $(SOURCES_HPX)
-	$(CPP) $(CCFLAGS) $^ $(HPX_PATHS) -lhpx -o run_$@
+	$(CPP)  $(CCFLAGS) $^  `pkg-config --cflags --libs hpx_application` $(HPX_PATHS) -lhpx -o run_$@
+#``pkg-config --cflags --libs hpx_application``\
+#    -L${HOME}/my_hpx_libs -lhpx_hello_world -lhpx_iostreams
+	
 
 openmp: $(SOURCES_OMP)
 	$(CC) $(CCFLAGS) $^ -fopenmp -o run_$@

@@ -58,14 +58,14 @@ typedef struct benchmark_param_t {
 
 
 
-int hpx_main(int argc, char *const *argv)
+int hpx_main(int argc, char **argv)
 {
 
-    int num_repeats = 8;
-    int num_warmups = 4;
+    int num_repeats = 4096;
+    int num_warmups = 128;
     int num_threads = 16;
-    int num_yields = 128;
-    int print_csv = 0;
+    int num_yields = 4096;
+    int print_csv = 1;
     char *prefix = strdup("");
 
     while (1) {

@@ -12,6 +12,6 @@ num_yields=4096
 num_warmups=128
 for reps in $(seq 1 1); do
   for thread_type in hpx; do #pthreads stdasync openmp qthreads argobots; do
-    ./run_$thread_type -r $num_repeats -w $num_warmups -y $num_yields -t $num_threads -c
+    ./run_$thread_type 
   done
 done
