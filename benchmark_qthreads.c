@@ -52,7 +52,6 @@ static void kernel(int num_threads, int num_yields)
     }
 }
 
-
 typedef struct benchmark_param_t {
     int num_yields;
     int num_threads;

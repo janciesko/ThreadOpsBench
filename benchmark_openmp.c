@@ -35,7 +35,7 @@ static void finalize(void)
 
 static void kernel(int num_threads, int num_yields)
 {
-    #pragma omp parallel num_threads(num_threads)
+    #pragma omp parallel num_threads(1)
     #pragma omp single
     {
     for (int i = 0; i < num_threads; i++) {
